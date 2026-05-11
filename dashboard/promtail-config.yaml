@@ -15,4 +15,4 @@ scrape_configs:
       - localhost
     labels:
       job: honeypot
-      __path__: /logs/honeypot.json.log
+      __path__: /logs/cowrie/cowrie.json
