@@ -53,8 +53,8 @@
             "uid": "Loki"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({job=\"honeypot\"} | json | __error__=\"\" [1m])) by (eventid)",
-          "legendFormat": "{{eventid}}",
+          "expr": "sum(count_over_time({job=\"honeypot\"} | json | label_format event=\"{{if .eventid}}{{.eventid}}{{else}}{{.eventType}}{{end}}\" | __error__=\"\" [1m])) by (event)",
+          "legendFormat": "{{event}}",
           "queryType": "range",
           "refId": "A"
         }
@@ -93,8 +93,8 @@
             "uid": "Loki"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({job=\"honeypot\"} | json | __error__=\"\" [1m])) by (src_ip)",
-          "legendFormat": "{{src_ip}}",
+          "expr": "sum(count_over_time({job=\"honeypot\"} | json | label_format attacker_ip=\"{{if .src_ip}}{{.src_ip}}{{else}}{{.ip}}{{end}}\" | __error__=\"\" [1m])) by (attacker_ip)",
+          "legendFormat": "{{attacker_ip}}",
           "queryType": "range",
           "refId": "A"
         }
