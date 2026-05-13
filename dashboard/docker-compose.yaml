@@ -32,5 +32,13 @@ services:
       - ./logs/cowrie:/cowrie/cowrie-git/var/log/cowrie
     restart: always
 
+  alert-api:
+    build: ./alert-api
+    env_file:
+      - ./alert-api/.env
+    ports:
+      - "8081:8081"
+    restart: always
+
 volumes:
   grafana-storage:
