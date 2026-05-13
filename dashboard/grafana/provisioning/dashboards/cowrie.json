@@ -41,7 +41,7 @@
                     "group": "loki",
                     "kind": "DataQuery",
                     "spec": {
-                      "expr": "sum(count_over_time({job=\"honeypot\"} | json | eventid=\"cowrie.session.connect\" [$__auto]))"
+                      "expr": "sum(count_over_time({job=\"honeypot\"} | json | eventid=\"cowrie.session.connect\" [$__range]))"
                     },
                     "version": "v0"
                   },
@@ -118,7 +118,7 @@
                     "group": "loki",
                     "kind": "DataQuery",
                     "spec": {
-                      "expr": "count(sum by (src_ip) (count_over_time({job=\"honeypot\"} | json | eventid=\"cowrie.session.connect\" [$__auto])))"
+                      "expr": "count(sum by (src_ip) (count_over_time({job=\"honeypot\"} | json | eventid=\"cowrie.session.connect\" [$__range])))"
                     },
                     "version": "v0"
                   },
@@ -195,7 +195,7 @@
                     "group": "loki",
                     "kind": "DataQuery",
                     "spec": {
-                      "expr": "sum(count_over_time({job=\"honeypot\"} | json | eventid=\"cowrie.login.success\" [$__auto]))"
+                      "expr": "sum(count_over_time({job=\"honeypot\"} | json | eventid=\"cowrie.login.success\" [$__range]))"
                     },
                     "version": "v0"
                   },
@@ -392,7 +392,7 @@
                     "group": "loki",
                     "kind": "DataQuery",
                     "spec": {
-                      "expr": "topk(10, sum by (username) (count_over_time({job=\"honeypot\"} | json | eventid=~\"cowrie.login.*\" | username!=\"\" [$__auto])))",
+                      "expr": "topk(10, sum by (username) (count_over_time({job=\"honeypot\"} | json | eventid=~\"cowrie.login.*\" | username!=\"\" [$__range])))",
                       "legendFormat": "{{username}}"
                     },
                     "version": "v0"
@@ -481,7 +481,7 @@
                     "group": "loki",
                     "kind": "DataQuery",
                     "spec": {
-                      "expr": "topk(10, sum by (password) (count_over_time({job=\"honeypot\"} | json | eventid=~\"cowrie.login.*\" | password!=\"\" [$__auto])))",
+                      "expr": "topk(10, sum by (password) (count_over_time({job=\"honeypot\"} | json | eventid=~\"cowrie.login.*\" | password!=\"\" [$__range])))",
                       "legendFormat": "{{password}}"
                     },
                     "version": "v0"
@@ -570,7 +570,7 @@
                     "group": "loki",
                     "kind": "DataQuery",
                     "spec": {
-                      "expr": "topk(10, sum by (src_ip) (count_over_time({job=\"honeypot\"} | json | eventid=\"cowrie.session.connect\" [$__auto])))",
+                      "expr": "topk(10, sum by (src_ip) (count_over_time({job=\"honeypot\"} | json | eventid=\"cowrie.session.connect\" [$__range])))",
                       "legendFormat": "{{src_ip}}"
                     },
                     "version": "v0"
