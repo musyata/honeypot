@@ -1,27 +1,85 @@
-# Honeypot Monitoring System
+# Honeypot Monitoring & Alerting Stack
 
-## Project Description
-This project is focused on basic infrastructure security monitoring in a containerized environment. The main idea is to deploy a honeypot service on a Linux server in order to capture unauthorized access attempts, collect logs from both the honeypot and the host system, and visualize suspicious activity through a monitoring dashboard. The solution also includes basic alerting for security-related events and validation through simulated attack scenarios.
+This project provides a complete, containerized stack for running a honeypot, collecting its logs, visualizing activity, and sending real-time alerts to Telegram.
 
-## Project Goal
-The goal of this project is to build a simple security monitoring environment that can detect, collect, and visualize malicious or suspicious access attempts in real time.
+## 🏗️ Main Components
 
-## Project Objectives
-- Deploy and configure the project environment on a Linux server
-- Containerize and run a honeypot service for capturing unauthorized access attempts
-- Configure centralized collection of honeypot and system logs
-- Implement monitoring and visualization of attack activity through a dashboard
-- Configure basic alerting for suspicious login attempts and security events
-- Validate the solution by simulating attack scenarios and analyzing the generated logs and alerts
+The infrastructure is orchestrated using Docker Compose (located in the `dashboard/` directory) and consists of the following services:
 
-## Technology Stack
-- Linux
-- Docker
-- Docker Compose
-- Cowrie Honeypot
-- Grafana or Kibana
-- Loki or ELK Stack
-- Telegram Bot API
+- **[Cowrie](https://github.com/cowrie/cowrie):** A medium-to-high interaction SSH and Telnet honeypot designed to log brute force attacks and the shell interactions performed by the attacker.
+- **[Promtail](https://grafana.com/docs/loki/latest/clients/promtail/):** A log shipping agent that tails Cowrie's JSON logs and forwards them to Loki.
+- **[Loki](https://grafana.com/oss/loki/):** A highly available, multi-tenant log aggregation system optimized for storing and querying logs.
+- **[Grafana](https://grafana.com/):** The analytics and interactive visualization web application. It connects to Loki to display honeypot activity dashboards and evaluates LogQL-based alert rules.
+- **[Alert API](./dashboard/alert-api/README.md):** A custom Node.js service (`alert-api`) that receives webhook alerts from Grafana, deduplicates them, and forwards formatted notifications to Telegram.
+- **Test Server:** A separate utility (`test-server`) for local mock testing.
 
-## Expected Result
-The final solution should provide a working honeypot environment with centralized log collection, attack visualization, and basic alerting. During the demonstration, simulated attack attempts should generate logs, update the dashboard, and trigger alerts.
+## 🚀 How to Run Locally
+
+### Prerequisites
+- **Git** installed to clone the repository.
+- **Docker** and **Docker Compose** installed on your system.
+- A **Telegram Bot Token** and **Chat ID** (for setting up the Alert API).
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/cowrie/cowrie
+cd honeypot
+```
+
+### 2. Configure the Alert API
+
+Before starting the stack, you need to configure the `alert-api` service so it can communicate with Telegram.
+
+```bash
+cp dashboard/alert-api/.env.example dashboard/alert-api/.env
+```
+Edit the `dashboard/alert-api/.env` file and fill in your details:
+- `TELEGRAM_BOT_TOKEN`: Your bot token from @BotFather.
+- `TELEGRAM_CHAT_IDS`: The chat ID(s) where alerts should be sent.
+- `ALERT_API_KEY`: A secret key you define to secure the webhook endpoint.
+
+*For detailed instructions on configuring the Telegram bot and Grafana contact points, please refer to the [Alert API README](./dashboard/alert-api/README.md).*
+
+### 3. Start the Stack
+
+Navigate to the `dashboard/` directory where the `docker-compose.yaml` is located and start the services in detached mode:
+
+```bash
+cd dashboard/
+docker compose up -d --build
+```
+
+### 4. Accessing the Services
+
+Once the containers are up and running, you can access the following endpoints:
+
+- **Grafana Dashboard:** [http://localhost:3000](http://localhost:3000) (Credentials: check your Grafana config/defaults)
+- **Cowrie Honeypot:** SSH on port `2222` and Telnet on port `2223`.
+- **Alert API Health Check:** [http://localhost:8081/health](http://localhost:8081/health)
+
+## 📂 Project Structure
+
+```text
+├── dashboard/
+│   ├── docker-compose.yaml     # Main infrastructure configuration
+│   ├── promtail-config.yaml    # Promtail log routing rules
+│   ├── alert-api/              # Telegram webhook forwarder source & Dockerfile
+│   │   └── README.md           # Alert API documentation
+│   └── grafana/                # Grafana provisioning (dashboards & datasources)
+├── test-server/                # Test mock server
+└── README.md                   # This file
+```
+
+## 🚨 Alerts & Dashboards
+
+Grafana is pre-provisioned with dashboards to visualize Cowrie metrics. The alerting rules are designed to detect:
+- Failed login bursts
+- Single IP bruteforce
+- Password spraying
+- Distributed scans
+- Connection floods
+- Suspicious command executions (e.g., `wget`, `curl`, `bash -i`)
+- Successful logins (Critical)
+
+For more information on the exact LogQL queries and scenarios, see the [Alert API Scenarios](./dashboard/alert-api/README.md#alert-scenarios-real-cowrie-rules--labels).
