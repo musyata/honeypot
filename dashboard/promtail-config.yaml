@@ -16,3 +16,8 @@ scrape_configs:
     labels:
       job: honeypot
       __path__: /logs/cowrie/cowrie.json
+  - targets:
+      - localhost
+    labels:
+      job: honeypot
+      __path__: /logs/honeypot.json.log

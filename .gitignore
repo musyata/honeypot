@@ -1,2 +1,3 @@
 dashboard/logs/
 .DS_Store
+dashboard/alert-api/.env
