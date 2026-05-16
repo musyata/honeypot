@@ -2,7 +2,7 @@
 
 This project provides a complete, containerized stack for running a honeypot, collecting its logs, visualizing activity, and sending real-time alerts to Telegram.
 
-## 🏗️ Main Components
+## Main Components
 
 The infrastructure is orchestrated using Docker Compose (located in the `dashboard/` directory) and consists of the following services:
 
@@ -13,7 +13,7 @@ The infrastructure is orchestrated using Docker Compose (located in the `dashboa
 - **[Alert API](./dashboard/alert-api/README.md):** A custom Node.js service (`alert-api`) that receives webhook alerts from Grafana, deduplicates them, and forwards formatted notifications to Telegram.
 - **Test Server:** A separate utility (`test-server`) for local mock testing.
 
-## 🚀 How to Run Locally
+## How to Run Locally
 
 ### Prerequisites
 - **Git** installed to clone the repository.
@@ -23,7 +23,7 @@ The infrastructure is orchestrated using Docker Compose (located in the `dashboa
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/cowrie/cowrie
+git clone https://github.com/musyata/honeypot/
 cd honeypot
 ```
 
@@ -58,7 +58,7 @@ Once the containers are up and running, you can access the following endpoints:
 - **Cowrie Honeypot:** SSH on port `2222` and Telnet on port `2223`.
 - **Alert API Health Check:** [http://localhost:8081/health](http://localhost:8081/health)
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 ├── dashboard/
@@ -71,7 +71,7 @@ Once the containers are up and running, you can access the following endpoints:
 └── README.md                   # This file
 ```
 
-## 🚨 Alerts & Dashboards
+## Alerts & Dashboards
 
 Grafana is pre-provisioned with dashboards to visualize Cowrie metrics. The alerting rules are designed to detect:
 - Failed login bursts
