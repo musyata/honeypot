@@ -13,6 +13,10 @@ The infrastructure is orchestrated using Docker Compose (located in the `dashboa
 - **[Alert API](./dashboard/alert-api/README.md):** A custom Node.js service (`alert-api`) that receives webhook alerts from Grafana, deduplicates them, and forwards formatted notifications to Telegram.
 - **Test Server:** A separate utility (`test-server`) for local mock testing.
 
+## Architecture
+
+![Honeypot Architecture](./honeypot-arch.png)
+
 ## How to Run Locally
 
 ### Prerequisites
