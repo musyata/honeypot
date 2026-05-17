@@ -1,0 +1,433 @@
+apiVersion: 1
+groups:
+- orgId: 1
+  name: eval_20s
+  folder: General
+  interval: 20s
+  rules:
+  - uid: efluqji5jufb4a
+    title: Cowrie | Distributed scan (many IPs)
+    condition: C
+    data:
+    - refId: A
+      queryType: instant
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: P8E80F9AEF21F6940
+      model:
+        editorMode: code
+        expr: "count(\n  sum by (src_ip) (\n    count_over_time({job=\"honeypot\"\
+          , filename=\"/logs/cowrie/cowrie.json\"} | json | eventid=\"cowrie.login.failed\"\
+          \ [5m])\n  ) > 0\n)"
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        queryType: instant
+        refId: A
+    - refId: C
+      queryType: expression
+      datasourceUid: __expr__
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 20
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: __expr__
+        expression: A
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: C
+        type: threshold
+    noDataState: OK
+    execErrState: Alerting
+    keepFiringFor: 40s
+    annotations:
+      description: High number of unique attacker IPs with failed logins in 5 minutes
+      summary: Distributed scan detected
+    labels:
+      category: scan
+      product: cowrie
+      severity: medium
+      source: honeypot
+    isPaused: false
+    notification_settings:
+      receiver: tg_api
+  - uid: ffluqwrli5xq8f
+    title: Cowrie | Successful login (critical)
+    condition: C
+    data:
+    - refId: A
+      queryType: instant
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: P8E80F9AEF21F6940
+      model:
+        editorMode: code
+        expr: "sum(\n  count_over_time({job=\"honeypot\", filename=\"/logs/cowrie/cowrie.json\"\
+          } | json | eventid=\"cowrie.login.success\" [2m])\n)\n"
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        queryType: instant
+        refId: A
+    - refId: C
+      queryType: expression
+      datasourceUid: __expr__
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: __expr__
+        expression: A
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: C
+        type: threshold
+    noDataState: OK
+    execErrState: Alerting
+    keepFiringFor: 1m
+    annotations:
+      description: At least one successful authentication event detected in the last
+        2 minutes
+      summary: Successful login into honeypot
+    labels:
+      category: auth
+      product: cowrie
+      severity: critical
+      source: honeypot
+    isPaused: false
+    notification_settings:
+      receiver: tg_api
+  - uid: eflur2khezgg0d
+    title: Cowrie | Suspicious command execution
+    condition: C
+    data:
+    - refId: A
+      queryType: instant
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: P8E80F9AEF21F6940
+      model:
+        editorMode: code
+        expr: "sum(\n  count_over_time(\n    {job=\"honeypot\", filename=\"/logs/cowrie/cowrie.json\"\
+          }\n    | json\n    | eventid=\"cowrie.command.input\"\n    |~ \"(wget|curl|chmod\\\
+          \\s\\\\+x|nc\\\\s|-e\\\\s|python\\\\s-c|bash\\\\s-c)\"\n    [5m]\n  )\n)"
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        queryType: instant
+        refId: A
+    - refId: C
+      queryType: expression
+      datasourceUid: __expr__
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 0
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: __expr__
+        expression: A
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: C
+        type: threshold
+    noDataState: OK
+    execErrState: Alerting
+    keepFiringFor: 1m40s
+    annotations:
+      description: Potential payload download/execution command detected in honeypot
+        session
+      summary: Suspicious command detected
+    labels:
+      category: command
+      product: cowrie
+      severity: critical
+      source: honeypot
+    isPaused: false
+    notification_settings:
+      receiver: tg_api
+  - uid: dflurf4irzd34f
+    title: Cowrie | Password spraying
+    condition: C
+    data:
+    - refId: A
+      queryType: instant
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: P8E80F9AEF21F6940
+      model:
+        editorMode: code
+        expr: "max(\n  count(\n    sum by (src_ip, username) (\n      count_over_time({job=\"\
+          honeypot\", filename=\"/logs/cowrie/cowrie.json\"} | json | eventid=\"cowrie.login.failed\"\
+          \ [5m])\n    ) > 0\n  ) by (src_ip)\n)"
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        queryType: instant
+        refId: A
+    - refId: C
+      queryType: expression
+      datasourceUid: __expr__
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 8
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: __expr__
+        expression: A
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: C
+        type: threshold
+    noDataState: OK
+    execErrState: Alerting
+    for: 1m
+    keepFiringFor: 1m40s
+    annotations:
+      description: Single source IP attempted multiple usernames in a short window
+      summary: Password spraying behavior detected
+    labels:
+      category: spraying
+      product: cowrie
+      severity: high
+      source: honeypot
+    isPaused: false
+    notification_settings:
+      receiver: tg_api
+  - uid: dflutdtke483kf
+    title: Cowrie | Failed logins burst
+    condition: C
+    data:
+    - refId: A
+      queryType: instant
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: P8E80F9AEF21F6940
+      model:
+        editorMode: code
+        expr: "sum(\n  count_over_time({job=\"honeypot\", filename=\"/logs/cowrie/cowrie.json\"\
+          } | json | eventid=\"cowrie.login.failed\" [1m])\n)"
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        queryType: instant
+        refId: A
+    - refId: C
+      queryType: expression
+      datasourceUid: __expr__
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 20
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: __expr__
+        expression: A
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: C
+        type: threshold
+    noDataState: OK
+    execErrState: Alerting
+    for: 20s
+    keepFiringFor: 1m
+    annotations:
+      summary: Failed logins burst
+    labels:
+      category: auth-burst
+      product: cowrie
+      severity: high
+      source: honeypot
+    isPaused: false
+    notification_settings:
+      receiver: tg_api
+- orgId: 1
+  name: honeypot_eval
+  folder: General
+  interval: 10s
+  rules:
+  - uid: efluqbdsf6oe8a
+    title: Cowrie | Bruteforce single IP
+    condition: C
+    data:
+    - refId: A
+      queryType: instant
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: P8E80F9AEF21F6940
+      model:
+        editorMode: code
+        expr: "max(\n  sum by (src_ip) (\n    count_over_time({job=\"honeypot\", filename=\"\
+          /logs/cowrie/cowrie.json\"} | json | eventid=\"cowrie.login.failed\" [1m])\n\
+          \  )\n)"
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        queryType: instant
+        refId: A
+    - refId: C
+      queryType: expression
+      datasourceUid: __expr__
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 15
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: __expr__
+        expression: A
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: C
+        type: threshold
+    noDataState: OK
+    execErrState: Alerting
+    keepFiringFor: 30s
+    annotations:
+      description: Too many failed logins from one source IP in 1 minute
+      summary: Bruteforce detected from single IP
+    labels:
+      category: bruteforce
+      product: cowrie
+      severity: high
+      source: honeypot
+    isPaused: false
+    notification_settings:
+      receiver: tg_api
+  - uid: bflv6zd5cn01sd
+    title: Cowrie | Connection flood
+    condition: C
+    data:
+    - refId: A
+      queryType: instant
+      relativeTimeRange:
+        from: 600
+        to: 0
+      datasourceUid: P8E80F9AEF21F6940
+      model:
+        editorMode: code
+        expr: "sum(\n  count_over_time({job=\"honeypot\", filename=\"/logs/cowrie/cowrie.json\"\
+          } | json | eventid=\"cowrie.session.connect\" [1m])\n)"
+        instant: true
+        intervalMs: 1000
+        maxDataPoints: 43200
+        queryType: instant
+        refId: A
+    - refId: C
+      queryType: expression
+      datasourceUid: __expr__
+      model:
+        conditions:
+        - evaluator:
+            params:
+            - 10
+            type: gt
+          operator:
+            type: and
+          query:
+            params:
+            - C
+          reducer:
+            params: []
+            type: last
+          type: query
+        datasource:
+          type: __expr__
+          uid: __expr__
+        expression: A
+        intervalMs: 1000
+        maxDataPoints: 43200
+        refId: C
+        type: threshold
+    noDataState: OK
+    execErrState: Alerting
+    keepFiringFor: 50s
+    annotations:
+      description: 'Too many new SSH sessions per minute. Current value: {{ $values.A
+        }}'
+      summary: Connection flood detected on Cowrie
+    labels:
+      category: connection_flood
+      product: cowrie
+      severity: medium
+      source: honeypot
+    isPaused: false
+    notification_settings:
+      receiver: tg_api

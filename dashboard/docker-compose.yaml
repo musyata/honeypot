@@ -19,6 +19,7 @@ services:
     volumes:
       - ./logs:/logs
       - ./promtail-config.yaml:/etc/promtail/config.yml
+      - ./grafana/provisioning/alerting:/etc/grafana/provisioning/alerting
     command: -config.file=/etc/promtail/config.yml
     depends_on:
       - loki
