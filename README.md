@@ -2,6 +2,10 @@
 
 This project provides a complete, containerized stack for running a honeypot, collecting its logs, visualizing activity, and sending real-time alerts to Telegram.
 
+## Grafana Dashboard Overview
+
+![Dashboard](imgs/dashboard.png)
+
 ## Main Components
 
 The infrastructure is orchestrated using Docker Compose (located in the `dashboard/` directory) and consists of the following services:
@@ -15,7 +19,7 @@ The infrastructure is orchestrated using Docker Compose (located in the `dashboa
 
 ## Architecture
 
-![Honeypot Architecture](./honeypot-arch.png)
+![Honeypot Architecture](imgs/honeypot-arch.png)
 
 ## How to Run Locally
 
@@ -34,6 +38,9 @@ cd honeypot
 ### 2. Configure the Alert API
 
 Before starting the stack, you need to configure the `alert-api` service so it can communicate with Telegram.
+
+Telegram Bot Alerting example:
+![Alert](imgs/bot-alert-example.jpg)
 
 ```bash
 cp dashboard/alert-api/.env.example dashboard/alert-api/.env
@@ -87,3 +94,13 @@ Grafana is pre-provisioned with dashboards to visualize Cowrie metrics. The aler
 - Successful logins (Critical)
 
 For more information on the exact LogQL queries and scenarios, see the [Alert API Scenarios](./dashboard/alert-api/README.md#alert-scenarios-real-cowrie-rules--labels).
+
+## Troubleshooting
+
+- Mock-server logs does not display in Grafana?
+Please follow the instruction in end of [promtail-config.yaml](./dashboard/promtail-config.yaml).
+
+- Cowrie works, but logs does not update in Grafana?
+Try to create cowrie.json file with writing permissions by own in `./dashboard/logs/cowrie/`
+
+Does not find answer on your question? - Open new bug issue with details, we will solve it. 
