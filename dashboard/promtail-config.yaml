@@ -18,6 +18,8 @@ scrape_configs:
       __path__: /logs/cowrie/cowrie.json
   - targets:
       - localhost
-    labels:
-      job: honeypot
-      __path__: /logs/honeypot.json.log
+
+#    IMPORTANT: if you're going to use mock-server logs, uncomment lines below, otherwise it will not work!
+#    labels:
+#      job: honeypot
+#      __path__: /logs/honeypot.json.log
