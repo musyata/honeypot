@@ -64,7 +64,7 @@ groups:
       source: honeypot
     isPaused: false
     notification_settings:
-      receiver: tg_api
+      receiver: Telegram-API
   - uid: ffluqwrli5xq8f
     title: Cowrie | Successful login (critical)
     condition: C
@@ -124,7 +124,7 @@ groups:
       source: honeypot
     isPaused: false
     notification_settings:
-      receiver: tg_api
+      receiver: Telegram-API
   - uid: eflur2khezgg0d
     title: Cowrie | Suspicious command execution
     condition: C
@@ -185,7 +185,7 @@ groups:
       source: honeypot
     isPaused: false
     notification_settings:
-      receiver: tg_api
+      receiver: Telegram-API
   - uid: dflurf4irzd34f
     title: Cowrie | Password spraying
     condition: C
@@ -246,7 +246,7 @@ groups:
       source: honeypot
     isPaused: false
     notification_settings:
-      receiver: tg_api
+      receiver: Telegram-API
   - uid: dflutdtke483kf
     title: Cowrie | Failed logins burst
     condition: C
@@ -305,7 +305,7 @@ groups:
       source: honeypot
     isPaused: false
     notification_settings:
-      receiver: tg_api
+      receiver: Telegram-API
 - orgId: 1
   name: honeypot_eval
   folder: General
@@ -370,7 +370,7 @@ groups:
       source: honeypot
     isPaused: false
     notification_settings:
-      receiver: tg_api
+      receiver: Telegram-API
   - uid: bflv6zd5cn01sd
     title: Cowrie | Connection flood
     condition: C
@@ -430,4 +430,4 @@ groups:
       source: honeypot
     isPaused: false
     notification_settings:
-      receiver: tg_api
+      receiver: Telegram-API
